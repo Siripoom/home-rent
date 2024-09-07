@@ -2,8 +2,6 @@
 import { initializeApp } from "firebase/app";
 import { getFirestore } from "firebase/firestore";
 import { getStorage } from "firebase/storage";
-// TODO: Add SDKs for Firebase products that you want to use
-// https://firebase.google.com/docs/web/setup#available-libraries
 
 // Your web app's Firebase configuration
 const firebaseConfig = {
@@ -16,7 +14,8 @@ const firebaseConfig = {
 };
 
 // Initialize Firebase
-// eslint-disable-next-line no-unused-vars
 const app = initializeApp(firebaseConfig);
+
+// Export Firestore and Storage
 export const db = getFirestore(app);
 export const storage = getStorage(app);

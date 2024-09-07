@@ -5,8 +5,13 @@ import Nav from "./components/Nav";
 import Footer from "./components/Footer";
 import Home from "./pages/Home";
 import HeroImage from "./components/HeroImage";
-import Contact from "./pages/Accommodation";
-import Accommodation from "./pages/Accommodation";
+
+import AboutUs from "./pages/AboutUs";
+import Contact from "./pages/Contact";
+import HomeRentForm from "./pages/HomeRentForm";
+import HomeRentList from "./pages/HomeRentList";
+import ContentList from "./pages/Content";
+import ContentManage from "./pages/ContentManage";
 function App() {
   return (
     <>
@@ -29,7 +34,7 @@ function App() {
             element={
               <>
                 <HeroImage title="Accommodation" />
-                <Accommodation />
+                <HomeRentList />
               </>
             }
           />
@@ -43,6 +48,29 @@ function App() {
               </>
             }
           />
+          <Route
+            path="content"
+            exact
+            element={
+              <>
+                <HeroImage title="Content" />
+                <ContentList />
+              </>
+            }
+          />
+
+          <Route
+            path="about"
+            exact
+            element={
+              <>
+                <HeroImage title="About Us" />
+                <AboutUs />
+              </>
+            }
+          />
+          <Route path="home" element={<HomeRentForm />} />
+          <Route path="contentmanage" element={<ContentManage />} />
           <Route path="*" element={<Page404 />} />
         </Routes>
         <Footer />

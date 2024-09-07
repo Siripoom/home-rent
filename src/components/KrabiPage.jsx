@@ -1,4 +1,6 @@
+import { Link } from "react-router-dom";
 import image1 from "../assets/images/m1.jpg";
+
 const KrabiPage = () => {
   return (
     <>
@@ -9,7 +11,7 @@ const KrabiPage = () => {
             <img
               src={image1}
               alt="Krabi scenery"
-              className="rounded-lg shadow-lg"
+              className="rounded-lg shadow-lg w-4/5 mx-auto"
             />
           </div>
           <div className="lg:w-1/2 lg:pl-10 mt-5 lg:mt-0">
@@ -20,7 +22,9 @@ const KrabiPage = () => {
               towering limestone cliffs. This natural beauty makes Krabi a
               popular destination for travelers from around the world.
             </p>
-            <button className="mt-5 btn btn-secondary">More</button>
+            <Link to="content">
+              <button className="mt-5 btn btn-secondary">More</button>
+            </Link>
           </div>
         </div>
       </section>
