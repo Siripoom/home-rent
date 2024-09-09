@@ -9,7 +9,9 @@ export default function ContactInfo() {
         <div className="space-y-4">
           {/* WhatsApp Contact */}
           <div className="flex items-center space-x-2 text-2xl mx-3">
-            <FaWhatsappSquare style={{ backgroundColor: "whatsapp" }} />
+            <a href="https://wa.me/qr/6GSWZWQGTUNGO1">
+              <FaWhatsappSquare style={{ backgroundColor: "whatsapp" }} />
+            </a>
             <span>+356 99978739, +66633292823</span>
           </div>
 

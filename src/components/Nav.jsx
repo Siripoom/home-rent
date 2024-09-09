@@ -41,6 +41,9 @@ export default function Nav() {
               <Link to="content">Content</Link>
             </li>
             <li>
+              <Link to="renting">Renting</Link>
+            </li>
+            <li>
               <Link to="about">About</Link>
             </li>
           </ul>
@@ -62,6 +65,9 @@ export default function Nav() {
           </li>
           <li>
             <Link to="content">Content</Link>
+          </li>
+          <li>
+            <Link to="renting">Renting</Link>
           </li>
           <li>
             <Link to="about">About</Link>

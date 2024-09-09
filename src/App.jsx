@@ -12,6 +12,7 @@ import HomeRentForm from "./pages/HomeRentForm";
 import HomeRentList from "./pages/HomeRentList";
 import ContentList from "./pages/Content";
 import ContentManage from "./pages/ContentManage";
+import RentingPage from "./pages/RentingPage";
 function App() {
   return (
     <>
@@ -55,6 +56,16 @@ function App() {
               <>
                 <HeroImage title="Content" />
                 <ContentList />
+              </>
+            }
+          />
+          <Route
+            path="renting"
+            exact
+            element={
+              <>
+                <HeroImage title="Renting" />
+                <RentingPage />
               </>
             }
           />

@@ -5,7 +5,7 @@ import { Swiper, SwiperSlide } from "swiper/react";
 import "swiper/css";
 import "swiper/css/navigation";
 import "swiper/css/pagination";
-
+import { FaWhatsappSquare } from "react-icons/fa";
 const HomeRentList = () => {
   const [homes, setHomes] = useState([]);
   const [loadingHomes, setLoadingHomes] = useState(true);
@@ -81,11 +81,15 @@ const HomeRentList = () => {
       {isModalOpen && selectedHome && (
         <div className="modal modal-open">
           <div className="modal-box max-w-5xl">
-            <h3 className="text-3xl font-bold mb-4">{selectedHome.title}</h3>
-            <h4 className="text-4xl font-bold mb-4">Description</h4>
-            <p className="mb-4">{selectedHome.description}</p>
-            <h4 className="text-4xl font-bold mb-4">Address</h4>
-            <p className="text-sm mb-4">{selectedHome.address}</p>
+            <h3 className="text-4xl font-bold mb-4">{selectedHome.title}</h3>
+            <h4 className="text-xl font-bold mb-4">Description</h4>
+            <p className="mb-4 mx-3">{selectedHome.description}</p>
+            <h4 className="text-xl font-bold mb-4">Address</h4>
+            <p className="text-sm mb-4 mx-3">{selectedHome.address}</p>
+            <h4 className="text-xl font-bold mb-4">Price</h4>
+            <p className="text-sm mb-4 mx-3">{selectedHome.price}</p>
+            <h4 className="text-xl font-bold mb-4">Rent type</h4>
+            <p className="text-sm mb-4 mx-3">{selectedHome.rentType}</p>
 
             {/* Swiper carousel for images */}
             {selectedHome.images && selectedHome.images.length > 0 && (
@@ -95,13 +99,18 @@ const HomeRentList = () => {
                     <img
                       src={image}
                       alt={`Image ${index + 1}`}
-                      className="w-full h-[500px] object-cover rounded-lg" // Increased image size
+                      className="w-full h-[500px] object-cover rounded-lg mb-4" // Increased image size
                     />
                   </SwiperSlide>
                 ))}
               </Swiper>
             )}
-
+            <div className="flex items-center space-x-2 text-2xl mx-3">
+              <a href="https://wa.me/qr/6GSWZWQGTUNGO1">
+                <FaWhatsappSquare style={{ backgroundColor: "whatsapp" }} />
+              </a>
+              <span>+356 99978739, +66633292823</span>
+            </div>
             <div className="modal-action">
               <button onClick={handleCloseModal} className="btn btn-secondary">
                 Close

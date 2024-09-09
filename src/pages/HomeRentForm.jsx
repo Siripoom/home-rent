@@ -15,6 +15,8 @@ const HomeRentForm = () => {
   const [title, setTitle] = useState("");
   const [description, setDescription] = useState("");
   const [address, setAddress] = useState("");
+  const [price, setPrice] = useState(""); // New price field
+  const [rentType, setRentType] = useState("Daily"); // New rentType field, default value is "Daily"
   const [images, setImages] = useState([]);
   const [imagePreviews, setImagePreviews] = useState([]);
   const [loading, setLoading] = useState(false);
@@ -24,72 +26,6 @@ const HomeRentForm = () => {
   // State for editing
   const [editHome, setEditHome] = useState(null);
   const [isEditModalOpen, setIsEditModalOpen] = useState(false);
-
-  // Handle image selection and create previews for multiple images
-  const handleImageChange = (e) => {
-    const files = Array.from(e.target.files);
-    setImages((prevImages) => [...prevImages, ...files]); // Append new images
-    const previews = files.map((file) => URL.createObjectURL(file));
-    setImagePreviews((prevPreviews) => [...prevPreviews, ...previews]); // Append new previews
-  };
-
-  // Handle form submission for creating
-  const handleSubmit = async (e) => {
-    e.preventDefault();
-    setLoading(true);
-
-    try {
-      // Step 1: Upload images to Firebase Storage and get their URLs
-      const imageUrls = await Promise.all(
-        images.map(async (image) => {
-          const imageRef = ref(storage, `homes/${uuidv4()}-${image.name}`);
-          await uploadBytes(imageRef, image);
-          const downloadURL = await getDownloadURL(imageRef);
-          return downloadURL;
-        })
-      );
-
-      // Step 2: Add home details to Firestore
-      await addDoc(collection(db, "homes"), {
-        title,
-        description,
-        address,
-        images: imageUrls, // Save the uploaded image URLs
-      });
-
-      // Reset the form after submission
-      setTitle("");
-      setDescription("");
-      setAddress("");
-      setImages([]);
-      setImagePreviews([]);
-      setLoading(false);
-      alert("Home rental listing added successfully!");
-
-      // Fetch updated home list after adding a new one
-      fetchHomes();
-    } catch (error) {
-      console.error("Error uploading files: ", error);
-      setLoading(false);
-    }
-  };
-
-  // Fetch the list of homes from Firestore
-  const fetchHomes = async () => {
-    setLoadingHomes(true);
-    try {
-      const querySnapshot = await getDocs(collection(db, "homes"));
-      const homeList = querySnapshot.docs.map((doc) => ({
-        id: doc.id,
-        ...doc.data(),
-      }));
-      setHomes(homeList);
-      setLoadingHomes(false);
-    } catch (error) {
-      console.error("Error fetching homes: ", error);
-      setLoadingHomes(false);
-    }
-  };
 
   // Load homes on component mount
   useEffect(() => {
@@ -145,6 +81,8 @@ const HomeRentForm = () => {
         title,
         description,
         address,
+        price,
+        rentType,
         images:
           imageUrls.length > 0
             ? [...editHome.images, ...imageUrls]
@@ -162,7 +100,80 @@ const HomeRentForm = () => {
       setLoading(false);
     }
   };
+  // Handle image selection and create previews for multiple images
+  const handleImageChange = (e) => {
+    const files = Array.from(e.target.files);
+    setImages((prevImages) => [...prevImages, ...files]); // Append new images
+    const previews = files.map((file) => URL.createObjectURL(file));
+    setImagePreviews((prevPreviews) => [...prevPreviews, ...previews]); // Append new previews
+  };
 
+  // Handle form submission for creating
+  const handleSubmit = async (e) => {
+    e.preventDefault();
+    setLoading(true);
+
+    try {
+      // Step 1: Upload images to Firebase Storage and get their URLs
+      const imageUrls = await Promise.all(
+        images.map(async (image) => {
+          const imageRef = ref(storage, `homes/${uuidv4()}-${image.name}`);
+          await uploadBytes(imageRef, image);
+          const downloadURL = await getDownloadURL(imageRef);
+          return downloadURL;
+        })
+      );
+
+      // Step 2: Add home details to Firestore, including price and rent type
+      await addDoc(collection(db, "homes"), {
+        title,
+        description,
+        address,
+        price, // Save price
+        rentType, // Save rent type (daily, weekly, monthly)
+        images: imageUrls, // Save the uploaded image URLs
+      });
+
+      // Reset the form after submission
+      setTitle("");
+      setDescription("");
+      setAddress("");
+      setPrice(""); // Reset price
+      setRentType("Daily"); // Reset rent type to default
+      setImages([]);
+      setImagePreviews([]);
+      setLoading(false);
+      alert("Home rental listing added successfully!");
+
+      // Fetch updated home list after adding a new one
+      fetchHomes();
+    } catch (error) {
+      console.error("Error uploading files: ", error);
+      setLoading(false);
+    }
+  };
+
+  // Fetch the list of homes from Firestore
+  const fetchHomes = async () => {
+    setLoadingHomes(true);
+    try {
+      const querySnapshot = await getDocs(collection(db, "homes"));
+      const homeList = querySnapshot.docs.map((doc) => ({
+        id: doc.id,
+        ...doc.data(),
+      }));
+      setHomes(homeList);
+      setLoadingHomes(false);
+    } catch (error) {
+      console.error("Error fetching homes: ", error);
+      setLoadingHomes(false);
+    }
+  };
+
+  // Load homes on component mount
+  useEffect(() => {
+    fetchHomes();
+  }, []);
   return (
     <div className="max-w-7xl mx-auto p-5">
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-10">
@@ -200,6 +211,31 @@ const HomeRentForm = () => {
                 onChange={(e) => setAddress(e.target.value)}
                 required
               />
+            </div>
+            {/* Price input */}
+            <div className="mb-4">
+              <label className="block text-lg font-medium">Price (Baht)</label>
+              <input
+                type="number"
+                className="input input-bordered w-full"
+                value={price}
+                onChange={(e) => setPrice(e.target.value)}
+                required
+              />
+            </div>
+            {/* Rent type selection */}
+            <div className="mb-4">
+              <label className="block text-lg font-medium">Rent Type</label>
+              <select
+                className="select select-bordered w-full"
+                value={rentType}
+                onChange={(e) => setRentType(e.target.value)}
+                required
+              >
+                <option value="Daily">Daily</option>
+                <option value="Weekly">Weekly</option>
+                <option value="Monthly">Monthly</option>
+              </select>
             </div>
             <div className="mb-4">
               <label className="block text-lg font-medium">Upload Images</label>
@@ -253,8 +289,13 @@ const HomeRentForm = () => {
                     )}
                   </div>
                   <h3 className="text-2xl font-bold mt-3">{home.title}</h3>
-                  {/* <p className="mt-2">{home.description}</p>
-                  <p className="text-sm mt-2 font-light">{home.address}</p> */}
+                  <p className="mt-2 text-lg font-semibold">
+                    Price: {home.price} Baht
+                  </p>
+                  <p className="text-sm font-medium text-gray-600">
+                    Rent Type: {home.rentType}
+                  </p>
+                  <p className="text-sm mt-2 font-light">{home.address}</p>
 
                   {/* Additional images */}
                   <div className="mt-3 grid grid-cols-3 gap-2">
@@ -327,6 +368,32 @@ const HomeRentForm = () => {
                   onChange={(e) => setAddress(e.target.value)}
                   required
                 />
+              </div>
+              <div className="mb-4">
+                <label className="block text-lg font-medium">
+                  Price (Baht)
+                </label>
+                <input
+                  type="number"
+                  className="input input-bordered w-full"
+                  value={price}
+                  onChange={(e) => setPrice(e.target.value)}
+                  required
+                />
+              </div>
+              {/* Rent type selection */}
+              <div className="mb-4">
+                <label className="block text-lg font-medium">Rent Type</label>
+                <select
+                  className="select select-bordered w-full"
+                  value={rentType}
+                  onChange={(e) => setRentType(e.target.value)}
+                  required
+                >
+                  <option value="Daily">Daily</option>
+                  <option value="Weekly">Weekly</option>
+                  <option value="Monthly">Monthly</option>
+                </select>
               </div>
               <div className="mb-4">
                 <label className="block text-lg font-medium">
